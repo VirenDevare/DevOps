@@ -25,13 +25,12 @@ pipeline {
 
     stage('Build and Test') {
   steps {
-    sh 'pwd'
-    sh 'ls -l'
-    sh 'ls -l java-maven-sonar-argocd-helm-k8s/spring-boot-app/pom.xml'
-    sh 'cat java-maven-sonar-argocd-helm-k8s/spring-boot-app/pom.xml'
-    sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
+    sh 'ls -l spring-boot-app/pom.xml'
+    sh 'cat spring-boot-app/pom.xml'
+    sh 'cd spring-boot-app && mvn clean package'
   }
 }
+
 
 
     stage('Static Code Analysis') {
