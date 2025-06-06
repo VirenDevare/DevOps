@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'maven:3.8.6-eclipse-temurin-17'
+      image 'maven:3.8.8-eclipse-temurin-17'
       args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
     }
   }
@@ -13,31 +13,25 @@ pipeline {
     GIT_USER_NAME = "VirenDevare"
   }
 
-stage('Clean Workspace') {
-  steps {
-    deleteDir()
-  }
-}
+  stages {  
 
-stage('Checkout') {
-  steps {
-    checkout([
-      $class: 'GitSCM',
-      branches: [[name: '*/main']],
-      userRemoteConfigs: [[
-        url: 'https://github.com/VirenDevare/DevOps.git'
-      ]],
-      extensions: [[$class: 'CleanBeforeCheckout']]
-    ])
-  }
-}
-
-
-  stages {
-
-    stage('Setup Docker CLI') {
+    stage('Clean Workspace') {
       steps {
-        sh 'apt-get update && apt-get install -y docker.io'
+        deleteDir()
+      }
+    }
+
+    stage('Checkout') {
+      steps {
+        checkout([
+          $class: 'GitSCM',
+          branches: [[name: '*/main']],
+          userRemoteConfigs: [[
+            url: 'https://github.com/VirenDevare/DevOps.git',
+            credentialsId: 'github'
+          ]],
+          extensions: [[$class: 'CleanBeforeCheckout']]
+        ])
       }
     }
 
@@ -93,5 +87,6 @@ stage('Checkout') {
         }
       }
     }
-  }
+
+  } 
 }
