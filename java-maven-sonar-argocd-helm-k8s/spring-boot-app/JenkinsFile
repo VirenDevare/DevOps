@@ -1,12 +1,9 @@
 pipeline {
   agent {
-  docker {
-    image 'abhishekf5/maven-abhishek-docker-agent:v1'
-    args '--user root --entrypoint=/bin/sh -v /var/run/docker.sock:/var/run/docker.sock'
-  }
-}
-  options {
-    skipDefaultCheckout()
+    docker {
+      image 'maven:3.8.6-openjdk-17'
+      args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
+    }
   }
 
   environment {
@@ -17,24 +14,9 @@ pipeline {
   }
 
   stages {
-
-    stage('Clean Workspace') {
+    stage('Setup Docker CLI') {
       steps {
-        deleteDir()
-      }
-    }
-
-    stage('Checkout') {
-      steps {
-        checkout([
-          $class: 'GitSCM',
-          branches: [[name: '*/main']],
-          userRemoteConfigs: [[
-            url: 'https://github.com/VirenDevare/DevOps.git',
-            credentialsId: 'github'
-          ]],
-          extensions: [[$class: 'CleanBeforeCheckout']]
-        ])
+        sh 'apt-get update && apt-get install -y docker.io'
       }
     }
 
