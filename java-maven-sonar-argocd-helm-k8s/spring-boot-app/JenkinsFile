@@ -13,8 +13,7 @@ pipeline {
     GIT_USER_NAME = "VirenDevare"
   }
 
-  stages {  
-
+  stages {
     stage('Clean Workspace') {
       steps {
         deleteDir()
