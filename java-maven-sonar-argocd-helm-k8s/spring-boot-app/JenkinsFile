@@ -19,6 +19,13 @@ pipeline {
       }
     }
 
+  stage('Verify Maven Installation') {
+  steps {
+    sh 'mvn -version'
+  }
+}
+
+
     stage('Build and Test') {
       steps {
         sh 'ls -ltr'
