@@ -6,6 +6,10 @@ pipeline {
     }
   }
 
+  options {
+    skipDefaultCheckout()
+  }
+
   environment {
     SONAR_URL = "http://52.91.163.176:9000"
     DOCKER_IMAGE = "abhishekf5/ultimate-cicd:${BUILD_NUMBER}"
@@ -14,6 +18,7 @@ pipeline {
   }
 
   stages {
+
     stage('Clean Workspace') {
       steps {
         deleteDir()
@@ -22,12 +27,14 @@ pipeline {
 
     stage('Checkout') {
       steps {
-        checkout([$class: 'GitSCM',
+        checkout([
+          $class: 'GitSCM',
           branches: [[name: '*/main']],
           userRemoteConfigs: [[
             url: 'https://github.com/VirenDevare/DevOps.git',
-            credentialsId: 'github' 
-          ]]
+            credentialsId: 'github'
+          ]],
+          extensions: [[$class: 'CleanBeforeCheckout']]
         ])
       }
     }
@@ -75,7 +82,7 @@ pipeline {
             sh '''
               git config user.email "virendevare@gmail.com"
               git config user.name "viren_13"
-              sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" spring-boot-app-manifests/deployment.yml
+              sed -i "s/replaceImageTag/${BUILD_NUMBER}/g spring-boot-app-manifests/deployment.yml"
               git add spring-boot-app-manifests/deployment.yml
               git commit -m "Update deployment image to version ${BUILD_NUMBER}"
               git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
